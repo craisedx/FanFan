@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,15 +32,8 @@ namespace FanFan
             
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(connection));
-            //services.AddScoped<UserRepository>();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
 
-                    options.LoginPath = "/login";
-                    options.AccessDeniedPath = "/login";
-                    
-                });
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddControllersWithViews();
             

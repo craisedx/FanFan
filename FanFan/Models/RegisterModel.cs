@@ -11,7 +11,7 @@ namespace FanFan.Models
         public string Name { get; set; }
         [Required(ErrorMessage = "Не указан адрес")]
         [EmailAddress(ErrorMessage = "Некорректный адрес")]
-        [Remote("CheckEmail", "Account",HttpMethod ="Post", ErrorMessage = "Аккаунт уже существует")]
+        [Remote("CheckEmail", "Account", ErrorMessage = "Аккаунт уже существует")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Не указан пароль")]
@@ -19,6 +19,7 @@ namespace FanFan.Models
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Не указан пароль")]
         [Compare("Password", ErrorMessage = "Пароль введен неверно")]
         public string ConfirmPassword { get; set; }
     }
