@@ -27,20 +27,39 @@ namespace FanFan
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddTransient<IUserValidator<AppUser>, CustomUserValidator>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             
             
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(connection));
+                options.UseSqlServer(connection))
+                .AddDefaultIdentity<AppUser>(opt =>
+            {
+                opt.Password.RequireDigit = true;
+                opt.Password.RequiredLength = 5;
+                opt.Password.RequireUppercase = true;
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.User.AllowedUserNameCharacters = "";
+                opt.User.RequireUniqueEmail = true;
+            }
+            )
+                .AddEntityFrameworkStores<ApplicationContext>()
+                .AddDefaultTokenProviders(); 
+            ;
 
-            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
-
+            services.ConfigureApplicationCookie(config => {
+                config.LoginPath = "/Admin/Login";
+                config.AccessDeniedPath = "/Home/AccessDenied";
+            }) ;
             services.AddControllersWithViews();
+            
             
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -66,6 +85,8 @@ namespace FanFan
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 
             });
+           
         }
+      
     }
 }

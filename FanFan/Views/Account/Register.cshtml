@@ -4,9 +4,9 @@
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
         <div>
-            <label asp-for="Name">Введите Имя</label><br />
-            <input type="text" asp-for="Name" />
-            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            <label asp-for="UserName">Введите Имя</label><br />
+            <input type="text" asp-for="UserName" />
+            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
         </div>
         <div>
             <label asp-for="Email">Введите Email</label><br />

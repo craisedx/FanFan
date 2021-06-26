@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FanFan.Models
 {
+   
     public class RegisterModel
     {
         [Required(ErrorMessage = "Не указано имя")]
-        [StringLength(50, MinimumLength = 3, ErrorMessage = "Длина строки должна быть от 3 до 50 символов")]
-        public string Name { get; set; }
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Длина имени должна быть от 3 до 50 символов")]
+        public string UserName { get; set; }
         [Required(ErrorMessage = "Не указан адрес")]
         [EmailAddress(ErrorMessage = "Некорректный адрес")]
-        [Remote("CheckEmail", "Account", ErrorMessage = "Аккаунт уже существует")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Не указан пароль")]

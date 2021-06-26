@@ -1,0 +1,11 @@
+﻿@model IEnumerable<FanFan.Models.AppUser>
+@{
+    ViewBag.Title = "Все пользователи";
+}
+<table class="table">
+    <tr><td>Имя</td><td>Возраст</td></tr>
+    @foreach (var item in Model)
+    {
+        <tr><td>@item.UserName</td><td>@item.PasswordHash</td></tr>
+    }
+</table>

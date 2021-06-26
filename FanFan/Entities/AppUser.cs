@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FanFan.Models
@@ -10,8 +11,7 @@ namespace FanFan.Models
     public class AppUser : IdentityUser
     {
 
-        [Required(ErrorMessage = "Не указано имя")]
-        public string Name { get; set; }
+       
         [Required(ErrorMessage = "Не указан пароль")]
         public string Password { get; set; }
         
@@ -19,11 +19,6 @@ namespace FanFan.Models
         public byte Condition { get; set; }
 
         public string PhotoUser { get; set; }
-        public int? RoleId { get; set; }
-        public Role Role { get; set; }
-        public AppUser()
-        {
-
-        }
+       
     }
 }

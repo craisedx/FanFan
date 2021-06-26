@@ -14,23 +14,28 @@ namespace FanFan
         {
            
         }
-        public async Task    SendEmailDefault(string email)
+        public async Task SendEmailDefault(string email, string subject, string message)
         {
            
             
-                MimeMessage message = new MimeMessage();
-                message.From.Add(new MailboxAddress("FanFan - Сервис с фанфиками", "confim@fanfan.com"));
-                message.To.Add(new MailboxAddress("", email));
-                message.Subject = "Подтверждение аккаунта";
-                message.Body = new BodyBuilder() { HtmlBody = "<h1>Нажмите на ссылку ниже для подтвержединия регистрации</h1> <a href=\"/vk.com/\">Нажми</a>" }.ToMessageBody();
+            MimeMessage emalmessage = new MimeMessage();
+            emalmessage.From.Add(new MailboxAddress("FanFan - Сервис с фанфиками", "fanfanconfim@fanfan.com"));
+            emalmessage.To.Add(new MailboxAddress("", email));
+            emalmessage.Subject = subject;
+            emalmessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = message
+            };
 
-                using (var client = new SmtpClient())
+            using (var client = new SmtpClient())
                 {
-                    await client.ConnectAsync("smtp.gmail.com", 587, true);
-                    await client.AuthenticateAsync("fanfanconfim@gmail.com", "ycN-VmS-RPh-RUj");
-                    await client.SendAsync(message);
 
-                    await client.DisconnectAsync(true);
+                await client.ConnectAsync("smtp.gmail.com", 587);
+
+                await client.AuthenticateAsync("fanfanconfim@gmail.com", "stbnkqraincqwfet");
+                await  client.SendAsync(emalmessage);
+
+                await client.DisconnectAsync(true);
                
 
                 }

@@ -18,16 +18,19 @@ namespace FanFan.Controllers
       
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser>  signInManager;
+       
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+           
         
         }
         public IActionResult Index()
         {
-            return View();
+           
+            return View(userManager);
         }
         [HttpGet]
         public IActionResult Register()
@@ -41,19 +44,55 @@ namespace FanFan.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = new AppUser { Name = model.Name, Password = model.Password, Condition = 1, Email = model.Email };
+                AppUser user = new AppUser { UserName = model.UserName, Password = model.Password, Condition = 1, Email = model.Email };
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Administrator"));
+                    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, code = code },
+                        protocol: HttpContext.Request.Scheme);
+                    EmailConfim emailService = new EmailConfim();
+                    await emailService.SendEmailDefault(model.Email, "Confirm your account",
+                        $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{callbackUrl}\">link</a><br> {callbackUrl}");
+
+                    return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+
+
+                    //return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
             return View(model);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View("Error");
+            }
+            var result = await userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+            else
+                return View("Error");
         }
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
@@ -66,9 +105,12 @@ namespace FanFan.Controllers
         public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid) {
-                var result = await signInManager.PasswordSignInAsync(model.Name, model.Password, false, false);
+                var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+               
+                
                 if (result.Succeeded)
                 {
+                 
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);

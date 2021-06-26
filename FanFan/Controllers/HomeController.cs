@@ -25,7 +25,7 @@ namespace FanFan.Controllers
          
             return View();
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Administrator")]
         public IActionResult SecuredPage()
         {
             var test1 = User.Identity.IsAuthenticated;
