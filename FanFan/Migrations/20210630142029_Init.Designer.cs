@@ -4,14 +4,16 @@ using FanFan.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FanFan.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210630142029_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,35 +96,6 @@ namespace FanFan.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("FanFan.Models.Chapter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ChapterText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FanFictionPostId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Picture")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FanFictionPostId");
-
-                    b.ToTable("Chapters");
-                });
-
             modelBuilder.Entity("FanFan.Models.FanFictionPost", b =>
                 {
                     b.Property<int>("Id")
@@ -172,6 +145,34 @@ namespace FanFan.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fandoms");
+                });
+
+            modelBuilder.Entity("FanFan.Models.Сhapter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ChapterText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FanFactionPostId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FanFictionPostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FanFictionPostId");
+
+                    b.ToTable("Сhapters");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -309,17 +310,6 @@ namespace FanFan.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("FanFan.Models.Chapter", b =>
-                {
-                    b.HasOne("FanFan.Models.FanFictionPost", "FanFictionPost")
-                        .WithMany()
-                        .HasForeignKey("FanFictionPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FanFictionPost");
-                });
-
             modelBuilder.Entity("FanFan.Models.FanFictionPost", b =>
                 {
                     b.HasOne("FanFan.Models.AppUser", "AppUser")
@@ -337,6 +327,15 @@ namespace FanFan.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Fandom");
+                });
+
+            modelBuilder.Entity("FanFan.Models.Сhapter", b =>
+                {
+                    b.HasOne("FanFan.Models.FanFictionPost", "FanFictionPost")
+                        .WithMany()
+                        .HasForeignKey("FanFictionPostId");
+
+                    b.Navigation("FanFictionPost");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

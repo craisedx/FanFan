@@ -1,6 +1,9 @@
 ﻿using FanFan.Models;
+using FanFan.Repository;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,27 +16,33 @@ namespace FanFan.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
+        private readonly ApplicationContext context1;
+        private UnitofWork db;
+        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ApplicationContext context)
         {
-            _logger = logger;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            db = new UnitofWork(context);
+            context1 = context;
         }
 
         public IActionResult Index()
         {
-         
+            var Obj = db.FanFictionPosts.GetNewFivePosts();
+            ViewBag.NewFive = Obj;
             return View();
         }
         [Authorize(Roles = "Administrator")]
         public IActionResult SecuredPage()
         {
-            var test1 = User.Identity.IsAuthenticated;
-            var test2 = User.Claims.ElementAt(1);
-            string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
-            return Content($"ваша роль: {role}");
+
+            ViewBag.UserPosts = db.FanFictionPosts.GetUserPosts(User.Claims.ElementAt(0).Value.ToString());
+         
+            return View();
         }
-        [Authorize(Roles = "admin, user")]
+        [Authorize(Roles = "Administrator, User")]
         public IActionResult Privacy()
         {
             return View();

@@ -18,7 +18,6 @@ namespace FanFan.Controllers
       
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser>  signInManager;
-       
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
@@ -48,7 +47,7 @@ namespace FanFan.Controllers
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await signInManager.SignInAsync(user, false);
+                    //await signInManager.SignInAsync(user, false);
                     await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Administrator"));
                     var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Action(
@@ -105,19 +104,24 @@ namespace FanFan.Controllers
         public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid) {
+                var user = userManager.FindByNameAsync(model.UserName).Result;
                 var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
-               
-                
                 if (result.Succeeded)
                 {
-                 
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    if (user.EmailConfirmed)
                     {
-                        return Redirect(model.ReturnUrl);
+                        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        TempData["EmailError"] = "Ошибка, email не подтвержден";
                     }
                 }
                 else

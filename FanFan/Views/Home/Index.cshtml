@@ -6,3 +6,21 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+<table>
+    
+    <tr>
+        <th>Фанфик</th>
+        <th>Автор</th>
+        <th>Фандом</th>
+    </tr>
+    
+    @foreach(var item in ViewBag.NewFive)
+            {
+        <tr>
+            <th>@item.Name</th>
+            <th>@item.AppUser.UserName</th>
+            <th>@item.Fandom.Name</th>
+        </tr>
+            }
+
+</table>

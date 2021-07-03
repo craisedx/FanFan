@@ -1,0 +1,50 @@
+﻿@model FanFan.Models.PostAndChapter
+<h2>Добавление поста</h2>
+<form asp-action="Create" asp-controller="FanFiction" asp-anti-forgery="true">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <div>
+            <label asp-for="Name">Введите название</label><br />
+            <input type="text" asp-for="Name" />
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+        <div>
+            <label asp-for="ShortDescription">Введите краткое описание</label><br />
+            <input type="text" asp-for="ShortDescription" />
+            <span asp-validation-for="ShortDescription" />
+            @Html.ValidationMessageFor(model => model.ShortDescription, "", new { @class = "text-danger" })
+        </div>
+        <div>
+            <label asp-for="FandomId">Выберите фендом</label><br />
+            <select size="1" asp-for="FandomId" style="text-align-last: center;width: calc(100% - 18px);">
+                @foreach (var item in ViewBag.AllFandoms)
+                {
+                    <option value="@Convert.ToInt32(item.Id)">@item.Name</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label asp-for="Picture">Вставте ссылку картинки фанфика</label><br />
+            <input asp-for="Picture" />
+            @Html.ValidationMessageFor(model => model.Picture, "", new { @class = "text-danger" })
+        </div>
+        <div>
+            <label asp-for="ChapterName">Введите название первой главы</label><br />
+            <input asp-for="ChapterName" />
+            @Html.ValidationMessageFor(model => model.ChapterName, "", new { @class = "text-danger" })
+        </div>
+        <div>
+            <label asp-for="ChapterText">Введите содержимое первой главый</label><br />
+            <input asp-for="ChapterText" />
+            @Html.ValidationMessageFor(model => model.ChapterText, "", new { @class = "text-danger" })
+        </div>
+        <div>
+            <label asp-for="ChapterPicture">Вставте ссылку картинки первой главы</label><br />
+            <input asp-for="ChapterPicture" />
+            @Html.ValidationMessageFor(model => model.ChapterPicture, "", new { @class = "text-danger" })
+        </div>
+        <div>
+            <input type="submit" value="Отправить" />
+        </div>
+    </div>
+</form>

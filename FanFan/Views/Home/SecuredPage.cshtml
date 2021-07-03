@@ -3,11 +3,30 @@
 *@
 @{
 }
-<h1>Top Sicret</h1>
-<h2> Welcome @User.Identity.Name</h2>
-<ul>
-    @foreach(var c in User.Claims)
+<h2>Ваше личное место</h2>
+<h2>Привет, @User.Claims.ElementAt(1).Value!</h2>
+<h3>Ваши произведения: </h3>
+
+    <table>
+        <tbody>
+            <tr>
+                <td>Название</td>
+                <td>Краткое описание</td>
+                <td>Количество глав</td>
+                <td>Фендом</td>
+                @*<td>Теги</td>*@
+            </tr>
+            @foreach (var item in ViewBag.UserPosts)
             {
-                <li>@c.Type: @c.Value</li>
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.ShortDescription</td>
+                <td></td>
+                <td></td>
+            </tr>
             }
-</ul>
+        </tbody>
+    </table>
+    <div>
+        <a asp-action="Create" asp-controller="FanFiction">Добавить произведение</a>
+    </div>

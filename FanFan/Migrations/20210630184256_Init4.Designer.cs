@@ -4,14 +4,16 @@ using FanFan.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FanFan.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210630184256_Init4")]
+    partial class Init4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,10 +114,6 @@ namespace FanFan.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Picture")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FanFictionPostId");
@@ -153,7 +151,8 @@ namespace FanFan.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("FandomId");
+                    b.HasIndex("FandomId")
+                        .IsUnique();
 
                     b.ToTable("FanFictionPosts");
                 });
@@ -329,8 +328,8 @@ namespace FanFan.Migrations
                         .IsRequired();
 
                     b.HasOne("FanFan.Models.Fandom", "Fandom")
-                        .WithMany()
-                        .HasForeignKey("FandomId")
+                        .WithOne("FanFictionPost")
+                        .HasForeignKey("FanFan.Models.FanFictionPost", "FandomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -388,6 +387,11 @@ namespace FanFan.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FanFan.Models.Fandom", b =>
+                {
+                    b.Navigation("FanFictionPost");
                 });
 #pragma warning restore 612, 618
         }
