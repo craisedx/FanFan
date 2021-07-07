@@ -31,15 +31,25 @@ namespace FanFan.Controllers
         public IActionResult Index()
         {
             var Obj = db.FanFictionPosts.GetNewFivePosts();
+            
             ViewBag.NewFive = Obj;
             return View();
         }
         [Authorize(Roles = "Administrator")]
         public IActionResult SecuredPage()
         {
+            List<int> Counts = new List<int>();
+            Counts.Clear();
+            var UserPosts = db.FanFictionPosts.GetUserPosts(User.Claims.ElementAt(0).Value.ToString());
+            ViewBag.UserPosts = UserPosts;
+            
 
-            ViewBag.UserPosts = db.FanFictionPosts.GetUserPosts(User.Claims.ElementAt(0).Value.ToString());
-         
+            for (int i=0; i < UserPosts.Count; i++)
+            {
+            var fser = db.Chapters.AllChapterByPost(UserPosts[i].Id);
+                Counts.Add(fser.Count);
+            }
+            ViewBag.Count = Counts;
             return View();
         }
         [Authorize(Roles = "Administrator, User")]

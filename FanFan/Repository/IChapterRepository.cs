@@ -8,5 +8,7 @@ namespace FanFan.Repository
 {
     public interface IChapterRepository : IRepository<Chapter>
     {
+        List<Chapter> AllChapterByPost(int PostId);
+        int AllChapterCountByPost(int PostId);
     }
 }

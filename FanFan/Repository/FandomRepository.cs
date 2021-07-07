@@ -14,7 +14,7 @@ namespace FanFan.Repository
         }
         public IEnumerable<Fandom> GetTopFandoms(int f)
         {
-            return db.Fandoms.Take(5).ToList();
+            return  db.Fandoms.Take(5).ToList();
         }
        
     }

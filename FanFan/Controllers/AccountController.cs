@@ -43,7 +43,7 @@ namespace FanFan.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = new AppUser { UserName = model.UserName, Password = model.Password, Condition = 1, Email = model.Email };
+                AppUser user = new AppUser { UserName = model.UserName, Password = model.Password, Email = model.Email, UserState=Status.Active };
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -56,12 +56,10 @@ namespace FanFan.Controllers
                         new { userId = user.Id, code = code },
                         protocol: HttpContext.Request.Scheme);
                     EmailConfim emailService = new EmailConfim();
-                    await emailService.SendEmailDefault(model.Email, "Confirm your account",
+                    await emailService.SendEmailDefault(model.Email, "Подтверждение аккаунта",
                         $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{callbackUrl}\">link</a><br> {callbackUrl}");
 
                     return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
-
-
                     //return RedirectToAction("Index", "Home");
                 }
                 else
@@ -110,13 +108,20 @@ namespace FanFan.Controllers
                 {
                     if (user.EmailConfirmed)
                     {
-                        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                        if (user.UserState == Status.Active)
                         {
-                            return Redirect(model.ReturnUrl);
+                            if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                            {
+                                return Redirect(model.ReturnUrl);
+                            }
+                            else
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            TempData["UserStateNoActive"] = "Аккаут заблокирован или удален";
                         }
                     }
                     else

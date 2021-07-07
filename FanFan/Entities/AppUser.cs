@@ -14,11 +14,10 @@ namespace FanFan.Models
        
         [Required(ErrorMessage = "Не указан пароль")]
         public string Password { get; set; }
-        
-        [Required]
-        public byte Condition { get; set; }
-
         public string PhotoUser { get; set; }
-       
+        [Required]
+        public Status UserState { get; set; }
+        public bool IsChecked { get; set; }
+
     }
 }

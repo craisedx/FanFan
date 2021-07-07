@@ -9,5 +9,8 @@ namespace FanFan.Repository
     public interface IUserRepository : IRepository<AppUser>
     {
         List<AppUser> UserByName(string name);
+       
+        void UserCommandInit(List<AppUser> users, string action);
+        void BlockUser(List<AppUser> users);
     }
 }

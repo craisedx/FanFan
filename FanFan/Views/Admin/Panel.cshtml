@@ -1,0 +1,121 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<FanFan.Models.AppUser>
+    @using (Html.BeginForm())
+    {
+    <br class="breadcrumb">
+    <div id="admin">
+        <br class="breadcrumb">
+        <div class="container">
+            <div class="row m-1">
+                <div class="col-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-1">
+                    <ul class="nav justify-content-center">
+                        <li class="nav-item m-1">
+                            <a class="nav-link active btn btn-primary" data-toggle="tab" href="#users">Пользователи</a>
+                        </li>
+                        <li class="nav-item m-1">
+                            <a class="nav-link btn btn btn-primary" data-toggle="tab" href="#posts">Посты</a>
+                        </li>
+                        <li class="nav-item m-1">
+                            <a class="nav-link btn btn btn-primary" data-toggle="tab" href="#menu2">Что-то другое</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-1">
+                    <div class="tab-content">
+                        <div id="users" class="container tab-pane active">
+                            <br>
+                            <h3>Пользователи</h3>
+                            <button type="submit" name="sub1" value="Block" class="btn btn-danger">Block</button>
+                            <button type="submit" name="sub2" value="Unblock" class="btn btn-success">Unblock</button>
+                            <button type="submit" name="sub3" value="Delete" class="btn btn-dark">Delete</button>
+
+                            
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" onclick="checkAll(this)" class="form-check-input" value=""> Отметить все
+                                </label>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th scope="col">id</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">E-mail</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.Count; i++)
+                                    {
+                                        <tr>
+
+                                            <th>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input" asp-for="@Model[i].IsChecked" value="">
+                                                    </label>
+                                                </div>
+                                            </th>
+
+                                            <th scope="row"><input type="hidden" asp-for="@Model[i].Id" />@Model[i].Id</th>
+                                            <td><input type="hidden" asp-for="@Model[i].UserName" />@Model[i].UserName</td>
+                                            <td><input type="hidden" asp-for="@Model[i].Email" />@Model[i].Email</td>
+                                            <td><input type="hidden" asp-for="@Model[i].UserState" />@Model[i].UserState.ToString()</td>
+                                            <td>
+                                                <form method="post" asp-action="" asp-controller="">
+                                                    @*<input type="hidden" value="@User.Claims.ElementAt(0).Value" name="User" />
+                                <input type="hidden" value="@Model[i].Id" name="Userid" />*@
+                                                    <button type="submit" value="submit" class="btn btn-secondary">Изменить</button>
+                                                </form>
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="posts" class="container tab-pane fade">
+                            <br>
+                            <h3>Посты</h3>
+                            <p>Тут все посты</p>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">id</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Author</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.AllFan)
+                                    {
+                                        <tr>
+                                            <th>@item.Id</th>
+                                            <th>@item.Name</th>
+                                            <th>@item.AppUser.UserName</th>
+                                            
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="menu2" class="container tab-pane fade">
+                            <br>
+                            <h3>Menu 2</h3>
+                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>      
+    }

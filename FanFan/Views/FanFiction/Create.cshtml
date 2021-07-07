@@ -1,4 +1,5 @@
 ﻿@model FanFan.Models.PostAndChapter
+
 <h2>Добавление поста</h2>
 <form asp-action="Create" asp-controller="FanFiction" asp-anti-forgery="true">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
@@ -30,14 +31,16 @@
         </div>
         <div>
             <label asp-for="ChapterName">Введите название первой главы</label><br />
-            <input asp-for="ChapterName" />
+            <input asp-for="ChapterName"/>
             @Html.ValidationMessageFor(model => model.ChapterName, "", new { @class = "text-danger" })
         </div>
         <div>
             <label asp-for="ChapterText">Введите содержимое первой главый</label><br />
-            <input asp-for="ChapterText" />
+            <input rows=10 asp-for="ChapterText" />
             @Html.ValidationMessageFor(model => model.ChapterText, "", new { @class = "text-danger" })
         </div>
+        @Html
+      
         <div>
             <label asp-for="ChapterPicture">Вставте ссылку картинки первой главы</label><br />
             <input asp-for="ChapterPicture" />

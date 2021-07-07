@@ -25,7 +25,7 @@ namespace FanFan.Repository
 
         public List<FanFictionPost> GetUserPosts(string id)
         {
-            return db.FanFictionPosts.Where(p => p.AppUserId == id).ToList();
+            return db.FanFictionPosts.Include(p => p.Fandom).Where(p => p.AppUserId == id).ToList();
         }
     }
 }

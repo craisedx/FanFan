@@ -16,15 +16,17 @@
                 <td>Фендом</td>
                 @*<td>Теги</td>*@
             </tr>
-            @foreach (var item in ViewBag.UserPosts)
+            @for(int i = 0; i < ViewBag.UserPosts.Count; i++)
             {
+                
             <tr>
-                <td>@item.Name</td>
-                <td>@item.ShortDescription</td>
-                <td></td>
-                <td></td>
+                <td>@ViewBag.UserPosts[i].Name</td>
+                <td>@ViewBag.UserPosts[i].ShortDescription</td>
+                <td>@ViewBag.Count[i]</td>
+                <td>@ViewBag.UserPosts[i].Fandom.Name</td>
             </tr>
-            }
+                    
+                }
         </tbody>
     </table>
     <div>

@@ -28,7 +28,10 @@ namespace FanFan.Repository
         {
             db.Set<TEntity>().Add(entity);
         }
-
+        public void CreateRange(List<TEntity> entitys)
+        {
+            db.Set<TEntity>().AddRange(entitys);
+        }
         public void Delete(int id)
         {
             TEntity entity = db.Set<TEntity>().Find(id);
@@ -59,6 +62,20 @@ namespace FanFan.Repository
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void UpdateRange(List<TEntity> entities)
+        {
+            db.Set<TEntity>().UpdateRange(entities);
+        }
+
+        public void ModEntry(IEnumerable<TEntity> entitys)
+        {
+            foreach (TEntity entity in entitys)
+            {
+
+                db.Entry(entity).State = EntityState.Modified;
+            }
         }
     }
 }

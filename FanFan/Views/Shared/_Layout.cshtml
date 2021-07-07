@@ -6,63 +6,105 @@
     <title>@ViewData["Title"] - FanFan</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <script type="text/javascript">
+        function checkAll(obj) {
+            'use strict';
+            var items = obj.form.getElementsByTagName("input"),
+                len, i;
+            for (i = 0, len = items.length; i < len; i += 1) {
+                if (items.item(i).type && items.item(i).type === "checkbox") {
+                    if (obj.checked) {
+                        items.item(i).checked = true;
+                    } else {
+                        items.item(i).checked = false;
+                    }
+                }
+            }
+        }
+    </script>
+
 </head>
+
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Account" asp-action="Register">FanFan</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FanFan</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbar-example" aria-controls="navbar-example"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="navbar-example">
+
+                    <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                Главная <span class="sr-only">(текущая)</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Panel">Админ Панель</a>
                         </li>
+                    </ul>
+
+                    <ul class="navbar-nav my-2 my-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SecuredPage">Secured Page</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            <form class="form-inline my-center my-lg-0">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Поиск"
+                                       aria-label="Поиск">
+                                <button class="btn btn-success m-2" type="submit">Искать</button>
+                            </form>
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">@User.Claims.ElementAt(1).Value</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                   role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    <img class="rounded-circle im_nav_avatar_photo" src="https://free-images.com/or/63d6/profile_man_user_home.jpg">
+                                </a>
+                                <a>@User.Claims.ElementAt(1).Value</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">Профиль</a>
+                                    <a class="dropdown-item" href="#">Четвертая ссылка</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Выход</a>
+                                </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">@User.Claims.ElementAt(0).Value</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                            </li>
+                            
                         }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline-success m-2" asp-area="" asp-controller="Account" asp-action="Login">Войти</a>
+                            </li>
+
+                        }
+
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main" class="pb-3">
+        <br class="breadcrumb"><br class="breadcrumb"><br class="breadcrumb">
+        @RenderBody()
+    </main>
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - FanFan - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - Dima - <a asp-area="" asp-controller="Home" asp-action="">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.validate.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
-    
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -12,5 +12,16 @@ namespace FanFan.Repository
         {
 
         }
+
+        public List<Chapter> AllChapterByPost(int PostId)
+        {
+            return db.Chapters.Where(p => p.FanFictionPostId == PostId).ToList();
+        }
+
+        public int AllChapterCountByPost(int PostId)
+        {
+            
+            return db.Chapters.Where(p => p.FanFictionPostId == PostId).ToList().Count();
+        }
     }
 }
