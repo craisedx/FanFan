@@ -1,5 +1,6 @@
 ﻿using FanFan.Models;
 using FanFan.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +28,19 @@ namespace FanFan.Controllers
 
         }
         [HttpGet]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Panel()
         {
             var model =  db.Users.GetList();
             var allfan = db.FanFictionPosts.GetList();
+            List<int> Counts = new List<int>();
+            Counts.Clear();
+            for (int i = 0; i < allfan.Count; i++)
+            {
+                var fser = db.Chapters.AllChapterByPost(allfan[i].Id);
+                Counts.Add(fser.Count);
+            }
+            ViewBag.Count = Counts;
             ViewBag.AllFan = allfan;
             return View(model);
         }
@@ -40,64 +50,8 @@ namespace FanFan.Controllers
             string str = form.Keys.FirstOrDefault();
             
             db.Users.UserCommandInit(users, str);
+            db.Users.RemoveMark();
             return RedirectToAction("panel");
         }
-       
-
-       
-        /* public void UnblockUser(List<User> users)
-         {
-             context.Users.UpdateRange(users);
-             context.SaveChanges();
-
-
-             IEnumerable<User> user1 = context.Users
-
-         .Where(c => c.IsChecked == true && c.UserState == Status.Block)
-         .AsEnumerable()
-
-         .Select(c => {
-             c.UserState = Status.Active;
-
-             return c;
-         });
-
-             foreach (User user in user1)
-             {
-
-                 context.Entry(user).State = EntityState.Modified;
-             }
-
-             context.SaveChanges();
-
-         } */
-       
-     /*   public void DeleteUser(List<User> users)
-        {
-            context.Users.UpdateRange(users);
-            context.SaveChanges();
-
-
-            IEnumerable<User> user1 = context.Users
-
-        .Where(c => c.IsChecked == true)
-        .AsEnumerable()
-
-        .Select(c => {
-            c.UserState = Status.Delete;
-
-            return c;
-        });
-
-
-            foreach (User user in user1)
-            {
-                // Указать, что запись изменилась
-                context.Entry(user).State = EntityState.Modified;
-            }
-            // Сохранить изменения
-            context.SaveChanges();
-
-        }*/
     }
 }

@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - FanFan</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/dropzone.css" />
 
     <script type="text/javascript">
         function checkAll(obj) {
@@ -47,10 +48,17 @@
                                 Главная <span class="sr-only">(текущая)</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Panel">Админ Панель</a>
-                        </li>
-                    </ul>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.Claims.ElementAt(4).Value == "Administrator")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Panel">Админ Панель</a>
+                                </li>
+                            }
+                        }
+                        </ul>
 
                     <ul class="navbar-nav my-2 my-lg-0">
                         <li class="nav-item">
@@ -66,12 +74,13 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
                                    role="button" data-toggle="dropdown" aria-haspopup="true"
                                    aria-expanded="false">
+                                @User.Claims.ElementAt(1).Value    
+                                    
                                     <img class="rounded-circle im_nav_avatar_photo" src="https://free-images.com/or/63d6/profile_man_user_home.jpg">
                                 </a>
-                                <a>@User.Claims.ElementAt(1).Value</a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#">Профиль</a>
-                                    <a class="dropdown-item" href="#">Четвертая ссылка</a>
+                                    <a class="dropdown-item" href="/Account/AccountInfo/@User.Claims.ElementAt(0).Value">Профиль</a>
+                                    <a class="dropdown-item"  asp-area="" asp-controller="FanFiction" asp-action="Create">Добавить Фанфик</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Выход</a>
                                 </div>

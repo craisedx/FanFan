@@ -13,16 +13,20 @@ namespace FanFan.Repository
         {
 
         }
-        public List<FanFictionPost> GetNewFivePosts()
+        public  List<FanFictionPost> GetNewFivePosts()
         {
-            return Enumerable.Reverse(db.FanFictionPosts.Include(u => u.Fandom).Include(u => u.AppUser)).Take(1).Reverse().ToList();
+           return  Enumerable.Reverse(db.FanFictionPosts.Include(u => u.Fandom).Include(u => u.AppUser)).Take(5).ToList();
         }
 
         public List<FanFictionPost> GetPostByNameAndShortDisc(string name, string shortdisc)
         {
             return db.FanFictionPosts.Where(p => p.Name == name).Where(p => p.ShortDescription == shortdisc).ToList();
         }
-
+        public  override FanFictionPost Get(int id)
+        {
+           return db.FanFictionPosts.Include(p => p.AppUser).Include(p => p.Fandom).Where(p => p.Id == id).First();
+            
+        }
         public List<FanFictionPost> GetUserPosts(string id)
         {
             return db.FanFictionPosts.Include(p => p.Fandom).Where(p => p.AppUserId == id).ToList();

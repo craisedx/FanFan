@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace FanFan
 {
@@ -23,11 +25,11 @@ namespace FanFan
         }
 
         public IConfiguration Configuration { get; }
-
+     
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            
             services.AddTransient<IUserValidator<AppUser>, CustomUserValidator>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             
@@ -50,7 +52,7 @@ namespace FanFan
             ;
 
             services.ConfigureApplicationCookie(config => {
-                config.LoginPath = "/Admin/Login";
+                config.LoginPath = "/Account/Login";
                 config.AccessDeniedPath = "/Home/AccessDenied";
             }) ;
             services.AddControllersWithViews();

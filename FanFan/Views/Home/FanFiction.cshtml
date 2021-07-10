@@ -1,0 +1,120 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container">
+    <div id="fanfic">
+        <div class="row">
+            <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
+                <div class="row justify-content-center">
+                    <img class="img-fluid" style="max-width:1110px; max-height: 625px;" src="https://img.gazeta.ru/files3/324/13571324/114257-heterochromia-blonde-military-fangs-hat-ruin-short-hair-sky-uniform-blue-eyes-yellow-eyes-Youjo-Senki-Tanya-Degurechaff-pic4_zoom-1500x1500-15119.jpg">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
+                <div class="row">
+                    <div class="col-9">
+                        <h1 class="display-5">@ViewBag.FFBI.Name</h1>
+                    </div>
+                    <div class="col-3 text-right">
+                        <div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Редактировать
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Редактировать</a>
+                                    <a class="dropdown-item" href="#">Добавить главу</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h5>
+                    <a class="text-dark text-decoration-none" href="#">
+                        <img class="rounded-circle im_nav_avatar_photo" src="https://sun1.velcom-by-minsk.userapi.com/s/v1/ig2/-zgPSxfjCYmE1VTVGvUgR3gUzFzrQrKfT8KpWwi5DMuY2PE_BoTr-0X_FQK32yg0NaTdWMyPvOfLqvohNsoLHKVB.jpg?size=200x0&quality=96&crop=278,256,802,802&ava=1">
+                        <span class="font-weight-bold">@ViewBag.FFBI.AppUser.UserName</span>
+                    </a>
+                </h5>
+                <br class="breadcrumb">
+                <div>
+                    <h4 class="disabley-5">Фэндом :</h4>
+                    <a href="#" class="badge badge-info">@ViewBag.FFBI.Fandom.Name</a>
+                </div>
+                <br class="breadcrumb">
+                <div>
+                    <h4 class="disabley-5">Тэги :</h4>
+                    <a href="#" class="badge badge-secondary">BDSM</a>
+                    <a href="#" class="badge badge-secondary">18+</a>
+                </div>
+                <br class="breadcrumb">
+                <div>
+                    <h4 class="disabley-5">Описание :</h4>
+                    <p class="text-md-left">@ViewBag.FFBI.ShortDescription</p>
+                </div>
+                <br class="breadcrumb">
+                <div>
+                    <h4 class="disabley-5">Главы :</h4>
+                    <ul class="nav justify-content-start">
+                        @for (int i = 0; i < ViewBag.AllChap.Count; i++)
+                        {
+                            string glava = $"glava{@i}";
+                            <li class="nav-item m-1">
+                                <a class="nav-link btn btn-success" data-toggle="tab" href="#@glava">@ViewBag.AllChap[i].Name</a>
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Ваш комментарий</label>
+                        <textarea type="email" class="form-control" id="exampleFormControlTextarea1" placeholder="Ваш комментарий"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
+                <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded">
+                    <div class="row border-bottom">
+                        <div class="col-9">
+                            <a class="text-dark text-decoration-none" href="#">
+                                <img class="rounded-circle im_nav_avatar_photo" src="https://sun1.velcom-by-minsk.userapi.com/s/v1/ig2/-zgPSxfjCYmE1VTVGvUgR3gUzFzrQrKfT8KpWwi5DMuY2PE_BoTr-0X_FQK32yg0NaTdWMyPvOfLqvohNsoLHKVB.jpg?size=200x0&quality=96&crop=278,256,802,802&ava=1">
+                                <span class="font-weight-bold">NEomet</span>
+                            </a>
+                        </div>
+                        <div class="col-3 text-right">
+                            <span class="text-right text-muted">12/13/1322 12:01</span>
+                        </div>
+                    </div>
+                    <br class="br">
+                    <p>Фанфик топ</p>
+                </div>
+                <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded ">
+                    <div class="row border-bottom">
+                        <div class="col-9">
+                            <a class="text-dark text-decoration-none" href="#">
+                                <img class="rounded-circle im_nav_avatar_photo" src="https://sun1.velcom-by-minsk.userapi.com/s/v1/ig2/-zgPSxfjCYmE1VTVGvUgR3gUzFzrQrKfT8KpWwi5DMuY2PE_BoTr-0X_FQK32yg0NaTdWMyPvOfLqvohNsoLHKVB.jpg?size=200x0&quality=96&crop=278,256,802,802&ava=1">
+                                <span class="font-weight-bold">getto</span>
+                            </a>
+                        </div>
+                        <div class="col-3 text-right">
+                            <span class="text-right text-muted">12/13/1322 12:01</span>
+                        </div>
+                    </div>
+                    <br class="br">
+                    <p>Топчик</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

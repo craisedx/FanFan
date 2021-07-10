@@ -10,6 +10,7 @@ namespace FanFan.Repository
     {
         List<TEntity> GetList();
         TEntity Get(int id); 
+        TEntity Get(string id); 
         void Create(TEntity item);
         void CreateRange(List<TEntity> items);
         void UpdateRange(List<TEntity> entities);

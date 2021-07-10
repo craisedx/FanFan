@@ -1,4 +1,5 @@
 ﻿using FanFan.Models;
+using FanFan.Repository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -17,14 +18,17 @@ namespace FanFan.Controllers
     {
       
         private readonly UserManager<AppUser> userManager;
+        private readonly ApplicationContext context;
         private readonly SignInManager<AppUser>  signInManager;
-
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        
+        private UnitofWork db;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ApplicationContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
-           
-        
+            db = new UnitofWork(context);
+          
+            this.context = context;
         }
         public IActionResult Index()
         {
@@ -47,8 +51,8 @@ namespace FanFan.Controllers
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    //await signInManager.SignInAsync(user, false);
-                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Administrator"));
+                    
+                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
                     var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Action(
                         "ConfirmEmail",
@@ -59,8 +63,8 @@ namespace FanFan.Controllers
                     await emailService.SendEmailDefault(model.Email, "Подтверждение аккаунта",
                         $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{callbackUrl}\">link</a><br> {callbackUrl}");
 
-                    return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
-                    //return RedirectToAction("Index", "Home");
+                    
+                    return RedirectToAction("ConfimEmail");
                 }
                 else
                 {
@@ -91,6 +95,10 @@ namespace FanFan.Controllers
             else
                 return View("Error");
         }
+        public IActionResult ConfimEmail()
+        {
+            return View();
+        }
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
@@ -103,13 +111,14 @@ namespace FanFan.Controllers
         {
             if (ModelState.IsValid) {
                 var user = userManager.FindByNameAsync(model.UserName).Result;
-                var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+                var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
                 if (result.Succeeded)
                 {
                     if (user.EmailConfirmed)
                     {
                         if (user.UserState == Status.Active)
                         {
+                                await signInManager.SignInAsync(user, false);
                             if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                             {
                                 return Redirect(model.ReturnUrl);
@@ -135,6 +144,24 @@ namespace FanFan.Controllers
                 }
             }
             return View(model);
+        }
+        [Authorize]
+        public IActionResult AccountInfo(string id)
+        {
+            var UserAccount = db.Users.Get(id);
+            var UserRole = db.Users.GetClaimRole(id);
+            ViewBag.UserAccount = UserAccount;
+            ViewBag.UserRole = UserRole;
+            return View();
+        }
+        [Authorize]
+        public IActionResult Edit()
+        {
+            var UserAccount = db.Users.Get(User.Claims.ElementAt(0).Value);
+           
+            ViewBag.UserAccount = UserAccount;
+           
+            return View();
         }
         [AcceptVerbs("GET", "POST")]
         public IActionResult CheckEmail(string email)

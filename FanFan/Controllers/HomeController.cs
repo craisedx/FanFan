@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace FanFan.Controllers
 {
@@ -20,6 +22,7 @@ namespace FanFan.Controllers
         private readonly SignInManager<AppUser> signInManager;
         private readonly ApplicationContext context1;
         private UnitofWork db;
+            
         public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ApplicationContext context)
         {
             this.userManager = userManager;
@@ -31,8 +34,9 @@ namespace FanFan.Controllers
         public IActionResult Index()
         {
             var Obj = db.FanFictionPosts.GetNewFivePosts();
-            
+            var Fandoms = db.Fandoms.GetList();
             ViewBag.NewFive = Obj;
+            ViewBag.Fandoms = Fandoms;
             return View();
         }
         [Authorize(Roles = "Administrator")]
@@ -50,6 +54,15 @@ namespace FanFan.Controllers
                 Counts.Add(fser.Count);
             }
             ViewBag.Count = Counts;
+            return View();
+        }
+        public IActionResult FanFiction(int id)
+        {
+            var FanFindById = db.FanFictionPosts.Get(id);
+            var test = FanFindById.AppUser.UserName;
+            ViewBag.FFBI = FanFindById;
+            var GetAllChapters = db.Chapters.AllChapterByPost(FanFindById.Id);
+            ViewBag.AllChap = GetAllChapters;
             return View();
         }
         [Authorize(Roles = "Administrator, User")]

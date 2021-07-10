@@ -19,11 +19,14 @@ namespace FanFan.Repository
             return db.Set<TEntity>().ToList();
         }
 
-        public TEntity Get(int id)
+        public virtual TEntity Get(int id)
         {
             return db.Set<TEntity>().Find(id);
         }
-
+        public virtual TEntity Get(string id)
+        {
+            return db.Set<TEntity>().Find(id);
+        }
         public void Create(TEntity entity)
         {
             db.Set<TEntity>().Add(entity);

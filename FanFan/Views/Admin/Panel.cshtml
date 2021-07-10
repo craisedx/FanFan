@@ -58,7 +58,7 @@
                                             <th>
                                                 <div class="form-check">
                                                     <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input" asp-for="@Model[i].IsChecked" value="">
+                                                        <input type="checkbox" class="form-check-input" asp-for="@Model[i].IsChecked" >
                                                     </label>
                                                 </div>
                                             </th>
@@ -89,18 +89,20 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">id</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Author</th>
+                                        <th scope="col">Имя</th>
+                                        <th scope="col">Кол-во Глав</th>
+                                        <th scope="col">Автор</th>
                                         
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in ViewBag.AllFan)
+                                    @for(int i=0;i < ViewBag.AllFan.Count;i++)
                                     {
                                         <tr>
-                                            <th>@item.Id</th>
-                                            <th>@item.Name</th>
-                                            <th>@item.AppUser.UserName</th>
+                                            <th>@ViewBag.AllFan[i].Id</th>
+                                            <th>@ViewBag.AllFan[i].Name</th>
+                                            <th>@ViewBag.Count[i]</th>
+                                            <th>@ViewBag.AllFan[i].AppUser.UserName</th>
                                             
                                         </tr>
                                     }
