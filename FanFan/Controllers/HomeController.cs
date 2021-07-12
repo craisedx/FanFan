@@ -90,13 +90,19 @@ namespace FanFan.Controllers
         }
         public IActionResult FanFiction(int id)
         {
+            var markdown = new MarkdownSharp.Markdown();
             var FanFindById = db.FanFictionPosts.Get(id);
             
             ViewBag.FFBI = FanFindById;
             var GetAllChapters = db.Chapters.AllChapterByPost(FanFindById.Id);
+            foreach(var item in GetAllChapters)
+            {
+                item.ChapterText = markdown.Transform(item.ChapterText);
+            } 
             ViewBag.AllChap = GetAllChapters;
             var GetAllComments = db.Comments.GetCommentsFromPostById(id);
-            ViewBag.AllComments = GetAllComments;
+            
+            ViewBag.AllComments = Enumerable.Reverse(GetAllComments).ToList();
             return View();
         }
         [Authorize(Roles = "Administrator, User")]

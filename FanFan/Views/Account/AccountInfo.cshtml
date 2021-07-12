@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="col-lg-4 text-right">
-            <button type="button" class="btn btn-warning text-right">Редактировать</button>
+            <button type="button" class="btn btn-warning text-right" onclick="window.location.href='/Account/UserChange/@ViewBag.UserAccount.Id'">Редактировать</button>
         </div>
     </div>
     <br class="breadcrumb">
@@ -34,7 +34,7 @@
         <div class="col-lg-12">
             <ul class="nav">
                 <li class="nav-item m-1">
-                    <a class="nav-link active btn btn-primary" data-toggle="tab" href="#home">Произведения</a>
+                    <a class="nav-link active btn btn-primary" data-toggle="tab">Произведения</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -54,13 +54,13 @@
                             <tr>
                                 <th scope="row">@item.Name</th>
                                 <td>
-                                    <button type="button" class="btn btn-danger">Удалить</button>
+                                    <button type="button" class="btn btn-danger" onclick="window.location.href='/FanFiction/DeletePost/@item.Id'">Удалить</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-warning">Редактировать</button>
+                                  <button type="button" class="btn btn-warning" onclick="window.location.href='/FanFiction/EditPost/@item.Id'">Редактировать</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-success">Добавать главу</button>
+                                    <button type="button" class="btn btn-success" onclick="window.location.href='/FanFiction/AddChapter/@item.Id'">Добавать главу</button>
                                 </td>
                             </tr>
                             }

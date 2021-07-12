@@ -1,0 +1,34 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model FanFan.Models.UserChange
+<div class="container mt-5">
+    <div class="row bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
+        <div class="col-6 col-md-4">
+            <h2 class="display-5">Изменение данных</h2>
+            <form  enctype="multipart/form-data" method="post" asp-action="UserChange" asp-controller="Account" asp-anti-forgery>
+                <input type="hidden" asp-for="Id" value=@ViewBag.User.Id />
+                <div class="form-group">
+                    <label asp-for="PhotoUser">Фото профиля</label>
+                    <div class="custom-file">
+                        <input accept="image" asp-for="PhotoUser" class="=form-control custom-file-input" />
+                        <label class="custom-file-label">Выберите файл</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Изменить</button>
+                @section Scripts{
+                    <script>
+                    $(document).ready(function () {
+                        $('.custom-file-input').on('change', function () {
+                            var FileName = $(this).val().split("\\").pop();
+                            $(this).next('.custom-file-label').html(FileName);
+                        })
+                    })
+                    </script>
+                }
+            </form>
+        </div>
+    </div>
+</div>

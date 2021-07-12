@@ -75,6 +75,9 @@
                             <div class="row justify-content-center">
                                 <img class="img-fluid" style="max-width:1110px; max-height: 625px;" src=@ViewBag.AllChap[i].Picture>
                             </div>
+                            <br class="breadcrumb">
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='/FanFiction/EditChapter/@ViewBag.AllChap[i].Id'">Редактировать</button>
+                            <button type="button" class="btn btn-danger" onclick="window.location.href='/FanFiction/DeleteChapter/@ViewBag.AllChap[i].Id'">Удалить Главу</button>
                         </div>
                         }
                     </div>

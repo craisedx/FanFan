@@ -34,6 +34,27 @@ namespace FanFan.Controllers
            
 
         }
+        public IActionResult EditChapter(int id)
+        {
+            var markdown = new MarkdownSharp.Markdown();
+            var Chapter = db.Chapters.Get(id);
+            Chapter.ChapterText = markdown.Transform(Chapter.ChapterText);
+            ViewBag.Chapter = Chapter;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult EditChapter(Chapter model)
+        {
+            Chapter chapter = db.Chapters.Get(model.Id);
+            if (model.ChapterText != null)
+                chapter.ChapterText = model.ChapterText;
+            if (model.Name != null)
+                chapter.Name = model.Name;
+            db.Chapters.Update(chapter);
+            db.Complete();
+            return Redirect($"/Home/FanFiction/{chapter.FanFictionPostId}");
+            
+        }
         [HttpGet]
         public IActionResult Create()
         {
@@ -106,6 +127,18 @@ namespace FanFan.Controllers
             }
             return RedirectToAction("Index","Home");
         }
+        public IActionResult DeletePost(int id)
+        {
+             db.FanFictionPosts.Delete(id);
+            db.Complete();
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult DeleteChapter(int id)
+        {
+            db.Chapters.Delete(id);
+            db.Complete();
+            return RedirectToAction("Index", "Home");
+        }
         public IActionResult EditPost(int id)
         {
             ViewBag.Post = db.FanFictionPosts.Get(id);
@@ -160,7 +193,7 @@ namespace FanFan.Controllers
                 Chapter newChapter = new Chapter
                 {
                     Name = chapter.Name,
-                    ChapterText = markdown.Transform(chapter.ChapterText),
+                    ChapterText = chapter.ChapterText,
                     Picture = UploadImage(imagePath, cloudinary).ToString(),
                     FanFictionPostId=chapter.FanFictionPostId
                 };
