@@ -15,6 +15,7 @@ namespace FanFan.Models
         public DbSet<Fandom> Fandoms { get; set; }
         public DbSet<FanFictionPost> FanFictionPosts { get; set; }
         public DbSet<Chapter> Chapters { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
         {

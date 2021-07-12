@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -20,7 +21,7 @@ namespace FanFan.Controllers
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
         private UnitofWork db;
-        private IWebHostEnvironment HostEnv;
+        private readonly IWebHostEnvironment HostEnv;
         public readonly string CloudName = "fanfancloud";
         public readonly string apiKey = "385355166726432";
         public readonly string apiSecret = "uKsN5XyN8oWOcob4Remt_2l_T60";
@@ -30,7 +31,7 @@ namespace FanFan.Controllers
             this.signInManager = signInManager;
             db = new UnitofWork(context);
             this.HostEnv = HostEnv;
-
+           
 
         }
         [HttpGet]
@@ -40,28 +41,9 @@ namespace FanFan.Controllers
             ViewBag.AllFandoms = fandoms;
             return View();
         }
-        public async Task<IActionResult> Upload(IFormFile file)
+        public Uri UploadImage(string imagepath, Cloudinary cloudinary)
         {
-            var files = Request.Form.Files.First();
-            var fileDic = "Files";
-            string filePath = Path.Combine(HostEnv.WebRootPath, fileDic);
-            if (!Directory.Exists(filePath))
-                Directory.CreateDirectory(filePath);
-            var fileName = file.FileName;
-            filePath = Path.Combine(filePath, fileName);
-            using (FileStream fs = System.IO.File.Create(filePath))
-            {
-                file.CopyTo(fs);
-
-            }
-            var MyAccount = new Account { ApiKey = apiKey, ApiSecret = apiSecret, Cloud = CloudName };
-            Cloudinary cloudinary = new Cloudinary(MyAccount);
-            string imagePath = filePath;
-            UploadImage(imagePath, cloudinary);
-            return RedirectToAction("Create");
-        }
-        public void UploadImage(string imagepath, Cloudinary cloudinary)
-        {
+            Uri ImageUrl = null;
             try
             {
                 var uploadParams = new ImageUploadParams()
@@ -69,29 +51,127 @@ namespace FanFan.Controllers
                     File = new FileDescription(imagepath)
                 };
                 var uploadresult = cloudinary.Upload(uploadParams);
-                
 
+                ImageUrl = uploadresult.SecureUrl;
             }
             catch(Exception)
             {
-                TempData["EmailError"] = "Ошибка, email не подтвержден";
+                TempData["Error"] = "Ошибка";
             }
+            return ImageUrl;
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(FanFictionPostViewModel fanfikandonechapter)
+        [AutoValidateAntiforgeryToken]
+        public IActionResult Create(FanFictionPostViewModel model)
         {
-
-            
             if (ModelState.IsValid)
             {
-                FanFictionPost newFanFiction = new FanFictionPost { AppUserId = fanfikandonechapter.AppUserId, Name = fanfikandonechapter.Name, ShortDescription = fanfikandonechapter.ShortDescription, FandomId = fanfikandonechapter.FandomId};
+                string UploadFolder = null;
+                string uniqueFileName = null;
+                string filePath = null;
+                if (model.Picture != null)
+                {
+                   UploadFolder =  Path.Combine(HostEnv.WebRootPath, "Files");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Picture.FileName;
+                    filePath = Path.Combine(UploadFolder, uniqueFileName);
+                    
+                    using (FileStream fs = System.IO.File.Create(filePath))
+                    {
+                        model.Picture.CopyTo(fs);
+
+                    }
+                }
+                var MyAccount = new Account { ApiKey = apiKey, ApiSecret = apiSecret, Cloud = CloudName };
+                Cloudinary cloudinary = new Cloudinary(MyAccount);
+                string imagePath = UploadFolder +"\\"+uniqueFileName;
+                
+                
+                FanFictionPost newFanFiction = new FanFictionPost
+                {
+                    AppUserId = model.AppUserId,
+                    Name = model.Name,
+                    ShortDescription = model.ShortDescription,
+                    FandomId = model.FandomId,
+                    Picture = UploadImage(imagePath, cloudinary).ToString()
+                };
+
+                System.IO.File.Delete(filePath);
+                
+                
                 db.FanFictionPosts.Create(newFanFiction);
                 db.Complete();
-               
                 
+                
+
             }
-            return RedirectToAction("SecuredPage", "Home");
+            return RedirectToAction("Index","Home");
+        }
+        public IActionResult EditPost(int id)
+        {
+            ViewBag.Post = db.FanFictionPosts.Get(id);
+            var fandoms = db.Fandoms.GetList();
+            ViewBag.AllFandoms = fandoms;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult EditPost(FanFictionPost model)
+        {
+            var FanPost = db.FanFictionPosts.Get(model.Id);
+            if(model.Name != null)
+            {
+                FanPost.Name = model.Name;
+            }
+            if (model.ShortDescription != null)
+                FanPost.ShortDescription = model.ShortDescription;
+            FanPost.FandomId = model.FandomId;
+            db.FanFictionPosts.Update(FanPost);
+            db.Complete();
+            return Redirect($"/Home/FanFiction/{FanPost.Id}");
+        }
+        public IActionResult AddChapter(int id )
+        {
+            ViewBag.PostId = db.FanFictionPosts.Get(id);
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddChapter(ChapterModel chapter)
+        {
+            if (ModelState.IsValid)
+            {
+                string UploadFolder = null;
+                string uniqueFileName = null;
+                string filePath = null;
+                if (chapter.Picture != null)
+                {
+                    UploadFolder = Path.Combine(HostEnv.WebRootPath, "Files");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + chapter.Picture.FileName;
+                    filePath = Path.Combine(UploadFolder, uniqueFileName);
+
+                    using (FileStream fs = System.IO.File.Create(filePath))
+                    {
+                        chapter.Picture.CopyTo(fs);
+
+                    }
+                }
+                var MyAccount = new Account { ApiKey = apiKey, ApiSecret = apiSecret, Cloud = CloudName };
+                Cloudinary cloudinary = new Cloudinary(MyAccount);
+                string imagePath = UploadFolder + "\\" + uniqueFileName;
+                var markdown = new MarkdownSharp.Markdown();
+                Chapter newChapter = new Chapter
+                {
+                    Name = chapter.Name,
+                    ChapterText = markdown.Transform(chapter.ChapterText),
+                    Picture = UploadImage(imagePath, cloudinary).ToString(),
+                    FanFictionPostId=chapter.FanFictionPostId
+                };
+
+                System.IO.File.Delete(filePath);
+
+
+                db.Chapters.Create(newChapter);
+                db.Complete();
+            }
+            return Redirect($"/Home/FanFiction/{chapter.Id}");
         }
     }
 }

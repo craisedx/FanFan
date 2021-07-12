@@ -3,7 +3,7 @@
     <div class="row bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
         <div class="col-10 col-md-5">
             <h2 class="display-5">Добавление фанфика</h2>
-            <form id="form" method="post" data-pasley-validate class="form-horizontal" asp-action="Create" asp-controller="FanFiction" enctype="multipart/form-data" asp-anti-forgery="true">
+            <form enctype="multipart/form-data" method="post" asp-action="Create" asp-controller="FanFiction" asp-anti-forgery="true">
                 <div class="validation" asp-validation-summary="ModelOnly"></div>
                 <br class="breadcrumb">
                     
@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="FandomId">Фендом</label>
-                    <select size="1" name="FandomId" class="form-control" id="exampleFormControlSelect1">
+                    <select size="1" name="FandomId" class="form-control">
                         @foreach (var item in ViewBag.AllFandoms)
                         {
                             <option value="@Convert.ToInt32(item.Id)">@item.Name</option>
@@ -29,22 +29,25 @@
                     </select>
                 </div>
                 <div class="form-group">
-                        <input type="file" name="file" asp-for="Picture" id="file">
-                    <label>Картинка</label>
-                    <div class="form-group inputDnD">
-                        <label class="control-label col-md-2" for="first-name">Файл загружен<span class="required">*</span></label>
-                        <div class="col-md-6" id="dropzone">
-
-                            <div action="/FanFiction/upload" class="dropzone" id="uploader">
-                                Перетащите файл или нажмите
-                            </div>
-                        </div>
+                    <label asp-for="Picture">Картинка</label>
+                    <div class="custom-file">
+                    <input accept="image" asp-for="Picture" class="=form-control custom-file-input"  />
+                        <label class="custom-file-label">Выберите файл</label>
                     </div>
-                  
                 </div>
                 <button type="submit" class="btn btn-primary">Добавить</button>
+                @section Scripts{
+                <script>
+                    $(document).ready(function () {
+                        $('.custom-file-input').on('change', function () {
+                            var FileName = $(this).val().split("\\").pop();
+                            $(this).next('.custom-file-label').html(FileName);
+                        })
+                    })
+                </script>
+                }
             </form>
-            <script src="~/js/dropzone.js" ></script>
+          
         </div>
     </div>
 </div>

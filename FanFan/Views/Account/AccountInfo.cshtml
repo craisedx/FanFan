@@ -3,19 +3,26 @@
 *@
 @{
 }
-<h1>Hello, </h1>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Have a nice day, " + ViewBag.UserAccount.UserName+"!";
 }
 <div class="container bg-secondary shadow p-3 mb-5 bg-white rounded p-5">
     <div class="row">
         <div class="col-lg-2">
-            <img src=@ViewBag.UserAccount.PhotoUser alt="..." class="rounded-circle im_avatar_photo">
+            <img src=@ViewBag.UserAccount.PhotoUser style="max-width:120px; max-height: 120px;" class="rounded-circle im_avatar_photo">
         </div>
         <div class="col-lg-6 ">
             <h1 class="h1">@ViewBag.UserAccount.UserName</h1>
             <div>
-                <p class="h4">Роль : <a  class="badge badge-info">@ViewBag.UserRole</a></p>
+                <p class="h4">Роль : @if (ViewBag.UserRole.ToString() == "User") 
+                {
+                    <a  class="badge badge-info">@ViewBag.UserRole</a>
+                }
+                else if (ViewBag.UserRole.ToString() == "Administrator")
+                { 
+                    <a class="badge badge-danger">@ViewBag.UserRole</a>
+                }
+                </p>
             </div>
         </div>
         <div class="col-lg-4 text-right">
@@ -42,8 +49,10 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach (var item in ViewBag.UserPosts)
+                            {
                             <tr>
-                                <th scope="row">Гарри Поттер ебёт Диму</th>
+                                <th scope="row">@item.Name</th>
                                 <td>
                                     <button type="button" class="btn btn-danger">Удалить</button>
                                 </td>
@@ -54,18 +63,8 @@
                                     <button type="button" class="btn btn-success">Добавать главу</button>
                                 </td>
                             </tr>
-                            <tr>
-                                <th scope="row">Гарри Поттер ебёт Диму</th>
-                                <td>
-                                    <button type="button" class="btn btn-danger">Удалить</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-warning">Редактировать</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-success">Добавать главу</button>
-                                </td>
-                            </tr>
+                            }
+                            
                         </tbody>
                     </table>
                 </div>

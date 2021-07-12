@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<br class="breadcrumb">
+<div id="allFanfic">
+    <br class="breadcrumb">
+    <div class="row m-1">
+        <div class="col-2 bg-secondary shadow p-3 mb-5 bg-white rounded m-1 align-self-start">
+            <form method="post">
+                <div class="form-group">
+                    <label> Фендом</label>
+                    <select size="1" name="FandomId" class="form-control">
+                        <option value="-1">Не выбрано</option>
+                        @foreach (var item in ViewBag.Fandoms)
+                        {
+                            <option value="@Convert.ToInt32(item.Id)">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Найти</button>
+            </form>
+        </div>
+        <div class="row ">
+            <div class="container">
+                <div class="col-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-1 ">
+                    <div class="row justify-content-center">
+                        @foreach (var item in ViewBag.SortedPosts)
+                        {
+                        <div class="col-6 col-md-3 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
+                            <a href="/Home/FanFiction/@item.Id">
+                                <img src=@item.Picture alt="..." class="img-thumbnail"> </a>
+                            <a href="/Home/FanFiction/@item.Id">
+                                <h3 class="display-5">@item.Name</h3> </a>
+                                <h5 class="display-5">@item.AppUser.UserName</h5>
+</div>
+                        }
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

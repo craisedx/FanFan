@@ -16,11 +16,13 @@ namespace FanFan.Repository
             FanFictionPosts = new FanFictionPostsRepository(context);
             Chapters = new ChapterRepository(context);
             Users = new UserRepository(context);
+            Comments = new CommentRepository(context);
         }
         public IFandomRepository Fandoms { get; private set; }
         public IFanFictionPostsRepository FanFictionPosts { get; private set; }
         public IChapterRepository Chapters { get; private set; }
         public IUserRepository Users { get; private set; }
+        public ICommentRepository Comments { get; private set; }
         public int Complete()
         {
             return context.SaveChanges();

@@ -47,7 +47,7 @@ namespace FanFan.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = new AppUser { UserName = model.UserName, Password = model.Password, Email = model.Email, UserState=Status.Active };
+                AppUser user = new AppUser { UserName = model.UserName, Password = model.Password, PhotoUser= "https://res.cloudinary.com/fanfancloud/image/upload/v1626040001/Profiles/profile_man_user_home_eebfno.jpg", Email = model.Email, UserState=Status.Active };
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -148,11 +148,17 @@ namespace FanFan.Controllers
         [Authorize]
         public IActionResult AccountInfo(string id)
         {
-            var UserAccount = db.Users.Get(id);
-            var UserRole = db.Users.GetClaimRole(id);
-            ViewBag.UserAccount = UserAccount;
-            ViewBag.UserRole = UserRole;
-            return View();
+            if (id == User.Claims.ElementAt(0).Value || User.Claims.ElementAt(2).Value == "Administrator")
+            {
+                var UserAccount = db.Users.Get(id);
+                var UserRole = db.Users.GetClaimRole(id);
+                var UserPosts = db.FanFictionPosts.GetUserPosts(id);
+                ViewBag.UserAccount = UserAccount;
+                ViewBag.UserRole = UserRole;
+                ViewBag.UserPosts = UserPosts;
+                return View();
+            } 
+            return RedirectToAction("Index", "Home");
         }
         [Authorize]
         public IActionResult Edit()

@@ -40,7 +40,7 @@ namespace FanFan.Repository
                 DeleteUser(users);
 
         }
-
+        
         private void DeleteUser(List<AppUser> users)
         {
             var test = db.Users.ToList();

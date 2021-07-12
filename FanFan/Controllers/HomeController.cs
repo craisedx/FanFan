@@ -30,10 +30,30 @@ namespace FanFan.Controllers
             db = new UnitofWork(context);
             context1 = context;
         }
+        public async Task<IActionResult> AllPosts(int FandomId)
+        {
+            var Fandoms = db.Fandoms.GetList();
+           
+            ViewBag.Fandoms = Fandoms;
 
+            if (FandomId != 0)
+            {
+                var SortedPostByFandom = await db.FanFictionPosts.GetByFandoms(FandomId);
+                List<FanFictionPost> ToPart = await db.FanFictionPosts.GetWithoutFandoms(FandomId);
+
+                SortedPostByFandom.AddRange(ToPart);
+                ViewBag.SortedPosts = SortedPostByFandom;
+            }
+            else
+            {
+                ViewBag.SortedPosts = db.FanFictionPosts.GetList();
+            }
+            return View();
+        }
+        
         public IActionResult Index()
         {
-            var Obj = db.FanFictionPosts.GetNewFivePosts();
+            var Obj = db.FanFictionPosts.GetNewSixPosts();
             var Fandoms = db.Fandoms.GetList();
             ViewBag.NewFive = Obj;
             ViewBag.Fandoms = Fandoms;
@@ -56,13 +76,27 @@ namespace FanFan.Controllers
             ViewBag.Count = Counts;
             return View();
         }
+        [Authorize]
+        public IActionResult AddComment(CommentViewModel comment)
+        {
+            comment.Date = DateTime.Now;
+            if (ModelState.IsValid)
+            {
+                Comment model  = new Comment { AppUserId = comment.AppUserId, Date = comment.Date, FanFictionPostId = comment.FanFictionPostId, Text = comment.Text };
+                db.Comments.Create(model) ;
+                db.Complete();
+            }
+            return Redirect($"/Home/FanFiction/{comment.FanFictionPostId}");
+        }
         public IActionResult FanFiction(int id)
         {
             var FanFindById = db.FanFictionPosts.Get(id);
-            var test = FanFindById.AppUser.UserName;
+            
             ViewBag.FFBI = FanFindById;
             var GetAllChapters = db.Chapters.AllChapterByPost(FanFindById.Id);
             ViewBag.AllChap = GetAllChapters;
+            var GetAllComments = db.Comments.GetCommentsFromPostById(id);
+            ViewBag.AllComments = GetAllComments;
             return View();
         }
         [Authorize(Roles = "Administrator, User")]

@@ -13,7 +13,8 @@ namespace FanFan.Repository
         {
 
         }
-        public  List<FanFictionPost> GetNewFivePosts()
+       
+        public  List<FanFictionPost> GetNewSixPosts()
         {
            return  Enumerable.Reverse(db.FanFictionPosts.Include(u => u.Fandom).Include(u => u.AppUser)).Take(5).ToList();
         }
@@ -30,6 +31,20 @@ namespace FanFan.Repository
         public List<FanFictionPost> GetUserPosts(string id)
         {
             return db.FanFictionPosts.Include(p => p.Fandom).Where(p => p.AppUserId == id).ToList();
+        }
+
+        public async  Task<List<FanFictionPost>> GetByFandoms(int FandomId)
+        {
+            return await db.FanFictionPosts.Include(p => p.Fandom).Include(p=>p.AppUser).Where(p => p.FandomId == FandomId).ToListAsync();
+        }
+        public override List<FanFictionPost> GetList()
+        {
+            return db.FanFictionPosts.Include(p=>p.AppUser).ToList();
+
+        }
+        public async Task<List<FanFictionPost>> GetWithoutFandoms(int FandomId)
+        {
+            return await db.FanFictionPosts.Include(p => p.Fandom).Include(p => p.AppUser).Where(p => p.FandomId != FandomId).ToListAsync();
         }
     }
 }

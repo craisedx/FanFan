@@ -10,6 +10,7 @@ namespace FanFan.Repository
         IFandomRepository Fandoms { get; }
         IFanFictionPostsRepository FanFictionPosts { get;}
         IChapterRepository Chapters { get;}
+        ICommentRepository Comments { get;}
         int Complete();
     }
 }

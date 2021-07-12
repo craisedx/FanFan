@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FanFan</title>
+    <title>@ViewData["Title"]</title>
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/dropzone.css" />
+    
 
     <script type="text/javascript">
         function checkAll(obj) {
@@ -48,7 +49,11 @@
                                 Главная <span class="sr-only">(текущая)</span>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="AllPosts">
+                                Все ФанФики
+                            </a>
+                        </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.Claims.ElementAt(4).Value == "Administrator")
@@ -58,7 +63,7 @@
                                 </li>
                             }
                         }
-                        </ul>
+                    </ul>
 
                     <ul class="navbar-nav my-2 my-lg-0">
                         <li class="nav-item">

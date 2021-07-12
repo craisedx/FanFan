@@ -14,7 +14,7 @@ namespace FanFan.Repository
         {
             this.db = context;
         }
-        public List<TEntity> GetList()
+        public virtual List<TEntity> GetList()
         {
             return db.Set<TEntity>().ToList();
         }
@@ -80,5 +80,10 @@ namespace FanFan.Repository
                 db.Entry(entity).State = EntityState.Modified;
             }
         }
+        public  void Update(TEntity entity)
+        {
+            db.Set<TEntity>().Update(entity);
+        }
+
     }
 }

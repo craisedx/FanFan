@@ -3,12 +3,13 @@
 *@
 @{
 }
+@model FanFan.Models.CommentViewModel
 <div class="container">
     <div id="fanfic">
         <div class="row">
             <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
                 <div class="row justify-content-center">
-                    <img class="img-fluid" style="max-width:1110px; max-height: 625px;" src="https://img.gazeta.ru/files3/324/13571324/114257-heterochromia-blonde-military-fangs-hat-ruin-short-hair-sky-uniform-blue-eyes-yellow-eyes-Youjo-Senki-Tanya-Degurechaff-pic4_zoom-1500x1500-15119.jpg">
+                    <img class="img-fluid" style="max-width:1110px; max-height: 625px;" src=@ViewBag.FFBI.Picture>
                 </div>
             </div>
         </div>
@@ -18,6 +19,8 @@
                     <div class="col-9">
                         <h1 class="display-5">@ViewBag.FFBI.Name</h1>
                     </div>
+                    @if (User.Claims.ElementAt(0).Value == ViewBag.FFBI.AppUser.Id)
+                    {
                     <div class="col-3 text-right">
                         <div>
                             <div class="btn-group">
@@ -25,29 +28,24 @@
                                     Редактировать
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Редактировать</a>
-                                    <a class="dropdown-item" href="#">Добавить главу</a>
+                                    <a class="dropdown-item" href="/FanFiction/EditPost/@ViewBag.FFBI.Id">Редактировать</a>
+                                    <a class="dropdown-item"  href="/FanFiction/AddChapter/@ViewBag.FFBI.Id" >Добавить главу</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    }
                 </div>
                 <h5>
                     <a class="text-dark text-decoration-none" href="#">
-                        <img class="rounded-circle im_nav_avatar_photo" src="https://sun1.velcom-by-minsk.userapi.com/s/v1/ig2/-zgPSxfjCYmE1VTVGvUgR3gUzFzrQrKfT8KpWwi5DMuY2PE_BoTr-0X_FQK32yg0NaTdWMyPvOfLqvohNsoLHKVB.jpg?size=200x0&quality=96&crop=278,256,802,802&ava=1">
+                        <img class="rounded-circle im_nav_avatar_photo" src=@ViewBag.FFBI.AppUser.PhotoUser>
                         <span class="font-weight-bold">@ViewBag.FFBI.AppUser.UserName</span>
                     </a>
                 </h5>
                 <br class="breadcrumb">
                 <div>
                     <h4 class="disabley-5">Фэндом :</h4>
-                    <a href="#" class="badge badge-info">@ViewBag.FFBI.Fandom.Name</a>
-                </div>
-                <br class="breadcrumb">
-                <div>
-                    <h4 class="disabley-5">Тэги :</h4>
-                    <a href="#" class="badge badge-secondary">BDSM</a>
-                    <a href="#" class="badge badge-secondary">18+</a>
+                    <a href="/Home/AllPosts/@ViewBag.FFBI.Fandom.Id" class="badge badge-info">@ViewBag.FFBI.Fandom.Name</a>
                 </div>
                 <br class="breadcrumb">
                 <div>
@@ -66,55 +64,73 @@
                             </li>
                         }
                     </ul>
-
+                    <div class="tab-content">
+                        @for (int i = 0; i < ViewBag.AllChap.Count; i++)
+                        {
+                            string glava = $"glava{@i}";
+                        <div id="@glava" class="container tab-pane fade">
+                            <br>
+                            <h3>@ViewBag.AllChap[i].Name</h3>
+                            <p>@Html.Raw(@ViewBag.AllChap[i].ChapterText)</p>
+                            <div class="row justify-content-center">
+                                <img class="img-fluid" style="max-width:1110px; max-height: 625px;" src=@ViewBag.AllChap[i].Picture>
+                            </div>
+                        </div>
+                        }
+                    </div>
                 </div>
 
             </div>
         </div>
         <div class="row">
             <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
-                <form>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Ваш комментарий</label>
-                        <textarea type="email" class="form-control" id="exampleFormControlTextarea1" placeholder="Ваш комментарий"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Отправить</button>
-                </form>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form method="post" asp-action="AddComment">
+                        <input type="hidden" asp-for="AppUserId" value=@User.Claims.ElementAt(0).Value.ToString() />
+                        <input type="hidden" asp-for="FanFictionPostId" value=@ViewBag.FFBI.Id />
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Ваш комментарий</label>
+                            <input type="text" class="form-control" id="exampleFormControlTextarea1" name="Text" placeholder="Ваш комментарий" />
+                            @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                }
+                else
+                {
+            <div class="alert alert-info" role="alert">
+                <strong>Ой!</strong> Войдите в аккаунт чтобы оставлять комментарии.
+            </div>}
             </div>
+
         </div>
+        @if (ViewBag.AllComments.Count != 0)
+        {
         <div class="row">
             <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
-                <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded">
-                    <div class="row border-bottom">
-                        <div class="col-9">
-                            <a class="text-dark text-decoration-none" href="#">
-                                <img class="rounded-circle im_nav_avatar_photo" src="https://sun1.velcom-by-minsk.userapi.com/s/v1/ig2/-zgPSxfjCYmE1VTVGvUgR3gUzFzrQrKfT8KpWwi5DMuY2PE_BoTr-0X_FQK32yg0NaTdWMyPvOfLqvohNsoLHKVB.jpg?size=200x0&quality=96&crop=278,256,802,802&ava=1">
-                                <span class="font-weight-bold">NEomet</span>
-                            </a>
+                @foreach (var item in ViewBag.AllComments)
+                {
+                    <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded">
+                        <div class="row border-bottom">
+                            <div class="col-9">
+                                <a class="text-dark text-decoration-none" href="#">
+                                    <img class="rounded-circle im_nav_avatar_photo" src=@item.AppUser.PhotoUser>
+                                    <span class="font-weight-bold">@item.AppUser.UserName</span>
+                                </a>
+                            </div>
+                            <div class="col-3 text-right">
+                                <span class="text-right text-muted">@item.Date.ToString()</span>
+                            </div>
                         </div>
-                        <div class="col-3 text-right">
-                            <span class="text-right text-muted">12/13/1322 12:01</span>
-                        </div>
+
+                        <br class="br">
+                        <p>@item.Text</p>
                     </div>
-                    <br class="br">
-                    <p>Фанфик топ</p>
-                </div>
-                <div class="col-11 col-md-12 bg-secondary shadow p-3 mb-5 bg-white rounded ">
-                    <div class="row border-bottom">
-                        <div class="col-9">
-                            <a class="text-dark text-decoration-none" href="#">
-                                <img class="rounded-circle im_nav_avatar_photo" src="https://sun1.velcom-by-minsk.userapi.com/s/v1/ig2/-zgPSxfjCYmE1VTVGvUgR3gUzFzrQrKfT8KpWwi5DMuY2PE_BoTr-0X_FQK32yg0NaTdWMyPvOfLqvohNsoLHKVB.jpg?size=200x0&quality=96&crop=278,256,802,802&ava=1">
-                                <span class="font-weight-bold">getto</span>
-                            </a>
-                        </div>
-                        <div class="col-3 text-right">
-                            <span class="text-right text-muted">12/13/1322 12:01</span>
-                        </div>
-                    </div>
-                    <br class="br">
-                    <p>Топчик</p>
-                </div>
+                }
+
             </div>
         </div>
+         }
     </div>
 </div>

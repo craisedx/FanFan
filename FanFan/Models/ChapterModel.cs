@@ -7,22 +7,18 @@ using System.Threading.Tasks;
 
 namespace FanFan.Models
 {
-    public class FanFictionPostViewModel
+    public class ChapterModel
     {
-      
         [Required]
-        public string AppUserId { get; set; }
-       
-
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
-        public string ShortDescription { get; set; }
-
+        public string ChapterText { get; set; }
         [Required]
-        public virtual int FandomId { get; set; }
-
-      
         public IFormFile Picture { get; set; }
+        [Required]
+        public int FanFictionPostId { get; set; }
+        
     }
 }
