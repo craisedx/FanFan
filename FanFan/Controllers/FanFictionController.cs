@@ -101,7 +101,6 @@ namespace FanFan.Controllers
                         model.Picture.CopyTo(fs);
 
                     }
-                }
                 var MyAccount = new Account { ApiKey = apiKey, ApiSecret = apiSecret, Cloud = CloudName };
                 Cloudinary cloudinary = new Cloudinary(MyAccount);
                 string imagePath = UploadFolder +"\\"+uniqueFileName;
@@ -115,14 +114,29 @@ namespace FanFan.Controllers
                     FandomId = model.FandomId,
                     Picture = UploadImage(imagePath, cloudinary).ToString()
                 };
+                    System.IO.File.Delete(filePath);
 
-                System.IO.File.Delete(filePath);
-                
-                
-                db.FanFictionPosts.Create(newFanFiction);
-                db.Complete();
-                
-                
+
+                    db.FanFictionPosts.Create(newFanFiction);
+                    db.Complete();
+                }
+                else
+                {
+                    FanFictionPost newFanFiction = new FanFictionPost
+                    {
+                        AppUserId = model.AppUserId,
+                        Name = model.Name,
+                        ShortDescription = model.ShortDescription,
+                        FandomId = model.FandomId,
+                       
+                    };
+                    System.IO.File.Delete(filePath);
+
+
+                    db.FanFictionPosts.Create(newFanFiction);
+                    db.Complete();
+
+                }
 
             }
             return RedirectToAction("Index","Home");

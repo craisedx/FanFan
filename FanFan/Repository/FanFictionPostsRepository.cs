@@ -16,7 +16,7 @@ namespace FanFan.Repository
        
         public  List<FanFictionPost> GetNewSixPosts()
         {
-           return  Enumerable.Reverse(db.FanFictionPosts.Include(u => u.Fandom).Include(u => u.AppUser)).Take(5).ToList();
+           return  Enumerable.Reverse(db.FanFictionPosts.Include(u => u.Fandom).Include(u => u.AppUser)).Take(6).ToList();
         }
 
         public List<FanFictionPost> GetPostByNameAndShortDisc(string name, string shortdisc)

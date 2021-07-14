@@ -30,23 +30,24 @@ namespace FanFan.Controllers
             db = new UnitofWork(context);
             context1 = context;
         }
-        public async Task<IActionResult> AllPosts(int FandomId)
+        public async Task<IActionResult> AllPosts(int id)
         {
             var Fandoms = db.Fandoms.GetList();
            
             ViewBag.Fandoms = Fandoms;
 
-            if (FandomId != 0)
+            if (id != 0)
             {
-                var SortedPostByFandom = await db.FanFictionPosts.GetByFandoms(FandomId);
-                List<FanFictionPost> ToPart = await db.FanFictionPosts.GetWithoutFandoms(FandomId);
+                var SortedPostByFandom = await db.FanFictionPosts.GetByFandoms(id);
+                SortedPostByFandom.Reverse();
+                List<FanFictionPost> ToPart = await db.FanFictionPosts.GetWithoutFandoms(id);
 
                 SortedPostByFandom.AddRange(ToPart);
                 ViewBag.SortedPosts = SortedPostByFandom;
             }
             else
             {
-                ViewBag.SortedPosts = db.FanFictionPosts.GetList();
+                ViewBag.SortedPosts = Enumerable.Reverse(db.FanFictionPosts.GetList());
             }
             return View();
         }
@@ -59,23 +60,7 @@ namespace FanFan.Controllers
             ViewBag.Fandoms = Fandoms;
             return View();
         }
-        [Authorize(Roles = "Administrator")]
-        public IActionResult SecuredPage()
-        {
-            List<int> Counts = new List<int>();
-            Counts.Clear();
-            var UserPosts = db.FanFictionPosts.GetUserPosts(User.Claims.ElementAt(0).Value.ToString());
-            ViewBag.UserPosts = UserPosts;
-            
-
-            for (int i=0; i < UserPosts.Count; i++)
-            {
-            var fser = db.Chapters.AllChapterByPost(UserPosts[i].Id);
-                Counts.Add(fser.Count);
-            }
-            ViewBag.Count = Counts;
-            return View();
-        }
+        
         [Authorize]
         public IActionResult AddComment(CommentViewModel comment)
         {

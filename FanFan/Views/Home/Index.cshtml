@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Главная";
 }
 <div class="container">
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -39,7 +39,7 @@
                     <a href="/Home/FanFiction/@item.Id">
                         <img src=@item.Picture alt="..." class="img-thumbnail">
                     </a>
-                    <a href="/Home/FanFiction/@item.Id">
+                    <a style="color:#000000; text-decoration:none"  href="/Home/FanFiction/@item.Id">
                         <h3 class="display-5">@item.Name</h3>
                     </a>
                     <h5 class="display-5">@item.AppUser.UserName</h5>
@@ -58,7 +58,7 @@
             @foreach (var item in ViewBag.Fandoms)
             {
                 <div class="col-6 col-md-3 bg-secondary shadow p-3 mb-5 bg-white rounded m-2">
-                    <h3 class="display-5">@item.Name</h3>
+                    <a style="color:#000000; text-decoration:none" href="/Home/AllPosts/@item.Id"><h3 class="display-5">@item.Name</h3></a>
                 </div>
             }
         </div>

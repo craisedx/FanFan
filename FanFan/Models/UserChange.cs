@@ -10,6 +10,7 @@ namespace FanFan.Models
     public class UserChange
     {
         public string Id { get; set; }
+        
         public IFormFile PhotoUser { get; set; }
     }
 }

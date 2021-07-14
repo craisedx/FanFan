@@ -19,6 +19,8 @@
                     <div class="col-9">
                         <h1 class="display-5">@ViewBag.FFBI.Name</h1>
                     </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
                     @if (User.Claims.ElementAt(0).Value == ViewBag.FFBI.AppUser.Id)
                     {
                     <div class="col-3 text-right">
@@ -34,6 +36,7 @@
                             </div>
                         </div>
                     </div>
+                    }
                     }
                 </div>
                 <h5>

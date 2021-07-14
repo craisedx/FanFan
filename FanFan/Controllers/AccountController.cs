@@ -38,8 +38,7 @@ namespace FanFan.Controllers
         }
         public IActionResult Index()
         {
-
-            return View(userManager);
+            return View();
         }
         [HttpGet]
         public IActionResult Register()
@@ -58,7 +57,7 @@ namespace FanFan.Controllers
                 if (result.Succeeded)
                 {
 
-                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
+                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Administrator"));
                     var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Action(
                         "ConfirmEmail",
@@ -70,7 +69,7 @@ namespace FanFan.Controllers
                         $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{callbackUrl}\">link</a><br> {callbackUrl}");
 
 
-                    return RedirectToAction("ConfimEmail");
+                    return RedirectToAction("ConfimEmail", "Account");
                 }
                 else
                 {
@@ -105,6 +104,10 @@ namespace FanFan.Controllers
         {
             var user = db.Users.Get(id);
             ViewBag.User = user;
+            return View();
+        }
+        public IActionResult ConfimEmail()
+        {
             return View();
         }
         [HttpPost]
