@@ -236,6 +236,7 @@ namespace FanFan.Controllers
 
                     return View();
                 }
+                
                 [AcceptVerbs("GET", "POST")]
                 public IActionResult CheckEmail(string email)
                 {
